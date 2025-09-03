@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Engine Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --tc-blue: #2B79FF;
+            --tc-blue-light: #EAF2FF;
+            --tc-bg: #F5F7FA;
+            --tc-text-primary: #1D242B;
+            --tc-text-secondary: #6B7682;
+            --tc-border: #DDE2E8;
+            --tc-red: #D92D20;
+            --tc-red-light: #FDEBE9;
+            --tc-orange: #F79009;
+            --tc-orange-light: #FEF6E7;
+            --tc-green: #039855;
+            --tc-green-light: #E6F5EE;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--tc-bg);
+            color: var(--tc-text-primary);
+        }
+
+        .tab-active {
+            background-color: var(--tc-blue);
+            color: white;
+        }
+        .tab-inactive {
+            background-color: transparent;
+            color: var(--tc-text-secondary);
+        }
+        .sub-tab-active {
+            background-color: white;
+            color: var(--tc-text-primary);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .sub-tab-inactive {
+            background-color: transparent;
+            color: var(--tc-text-secondary);
+        }
+        
+        select, input[type="text"] {
+            border-color: var(--tc-border);
+        }
+        select:focus, input[type="text"]:focus {
+            --tw-ring-color: var(--tc-blue);
+            border-color: var(--tc-blue);
+        }
+
+        .read-alert {
+            opacity: 0.6;
+            background-color: #F8F9FA;
+        }
+        .filter-btn-active {
+            background-color: var(--tc-blue-light) !important;
+            color: var(--tc-blue) !important;
+            border-color: var(--tc-blue) !important;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8 flex items-center gap-3">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="40" rx="8" fill="#2B79FF"/>
+                <path d="M22.09,17.18a3.17,3.17,0,0,0-4.2,0l-1.33,1.33a.7.7,0,0,0,0,1l3.5,3.5a.7.7,0,0,0,1,0l1.33-1.33a3,3,0,0,0,0-4.22ZM20.4,20.55,18.55,18.7a1.76,1.76,0,0,1,2.5,0,1.79,1.79,0,0,1,0,2.5Z" fill="white"/>
+                <path d="M25.7,13.57a8.5,8.5,0,0,0-11.38,0L13.19,14.7a6.52,6.52,0,0,1,8.64,0l1.13-1.13Z" fill="white"/>
+                <path d="M28.87,10.4a12.89,12.89,0,0,0-17.76,0L12.24,11.5a10.89,10.89,0,0,1,15.54,0Z" fill="white"/>
+            </svg>
+            <h1 class="text-3xl font-bold text-[color:var(--tc-text-primary)]">OTP Engine</h1>
+        </header>
+
+        <!-- Top Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+             <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)] flex flex-col justify-between">
+                <div>
+                    <span class="text-sm font-medium text-[color:var(--tc-text-secondary)]">OTP Cost per User</span>
+                    <p class="text-3xl font-semibold text-[color:var(--tc-text-primary)] mt-1">0.081</p>
+                </div>
+            </div>
+             <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)]">
+                <span class="text-sm font-medium text-[color:var(--tc-text-secondary)]">AVG VA India</span>
+                <p class="text-3xl font-semibold text-[color:var(--tc-text-primary)] mt-1">80%</p>
+            </div>
+             <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)]">
+                <span class="text-sm font-medium text-[color:var(--tc-text-secondary)]">AVG VA Egypt</span>
+                <p class="text-3xl font-semibold text-[color:var(--tc-text-primary)] mt-1">80%</p>
+            </div>
+             <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)]">
+                <span class="text-sm font-medium text-[color:var(--tc-text-secondary)]">AVG VA Nigeria</span>
+                <p class="text-3xl font-semibold text-[color:var(--tc-text-primary)] mt-1">80%</p>
+            </div>
+        </div>
+
+        <!-- Charts and Issues -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="lg:col-span-1 bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)]">
+                <h3 class="font-semibold text-[color:var(--tc-text-primary)] mb-4">Monthly OTP Costs</h3>
+                <div class="flex items-end h-40 space-x-4">
+                    <div class="w-full bg-blue-100 rounded-t-lg" style="height: 60%; background-color: #D1E4FF"></div>
+                    <div class="w-full bg-blue-200 rounded-t-lg" style="height: 80%; background-color: #A3C7FF"></div>
+                    <div class="w-full bg-blue-300 rounded-t-lg" style="height: 50%; background-color: #75A9FF"></div>
+                    <div class="w-full bg-blue-400 rounded-t-lg" style="height: 90%; background-color: #478CFF"></div>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)] flex items-center justify-between">
+                <div>
+                    <h3 class="font-semibold text-[color:var(--tc-text-primary)]">Provider Issues</h3>
+                    <p class="text-5xl font-bold text-[color:var(--tc-red)] mt-2">3</p>
+                </div>
+                <div class="bg-[color:var(--tc-red-light)] p-4 rounded-full">
+                    <i data-lucide="siren" class="w-10 h-10 text-[color:var(--tc-red)]"></i>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)] flex items-center justify-between">
+                <div>
+                    <h3 class="font-semibold text-[color:var(--tc-text-primary)]">Suspected Attacks</h3>
+                    <p class="text-5xl font-bold text-[color:var(--tc-orange)] mt-2">1</p>
+                </div>
+                 <div class="bg-[color:var(--tc-orange-light)] p-4 rounded-full">
+                    <i data-lucide="shield-alert" class="w-10 h-10 text-[color:var(--tc-orange)]"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation -->
+        <div class="bg-slate-100 p-1.5 rounded-xl flex space-x-2 mb-8 border border-[color:var(--tc-border)]">
+            <button id="alerts-tab" class="w-full py-2.5 px-4 rounded-lg font-semibold transition-all duration-300 tab-active">Alerts</button>
+            <button id="config-tab" class="w-full py-2.5 px-4 rounded-lg font-semibold transition-all duration-300 tab-inactive">Configuration</button>
+            <button id="audit-tab" class="w-full py-2.5 px-4 rounded-lg font-semibold transition-all duration-300 tab-inactive">Audit Log</button>
+        </div>
+
+        <!-- Content Area -->
+        <main>
+            <!-- Alerts Page -->
+            <div id="alerts-page">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)] flex justify-between items-start">
+                        <div>
+                            <p class="font-semibold">Active Alerts</p>
+                            <p class="text-4xl font-bold text-[color:var(--tc-red)] mt-1">2</p>
+                        </div>
+                        <i data-lucide="bell-ring" class="w-6 h-6 text-[color:var(--tc-red)]"></i>
+                    </div>
+                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)] flex justify-between items-start">
+                        <div>
+                            <p class="font-semibold">Warnings</p>
+                            <p class="text-4xl font-bold text-[color:var(--tc-orange)] mt-1">1</p>
+                        </div>
+                        <i data-lucide="alert-triangle" class="w-6 h-6 text-[color:var(--tc-orange)]"></i>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)] flex justify-between items-start">
+                        <div>
+                            <p class="font-semibold">Auto Resolved</p>
+                            <p class="text-4xl font-bold text-[color:var(--tc-green)] mt-1">2</p>
+                        </div>
+                        <i data-lucide="check-circle-2" class="w-6 h-6 text-[color:var(--tc-green)]"></i>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-4 mb-6">
+                    <div id="filter-btn-container" class="flex-grow flex flex-wrap gap-2">
+                        <button data-filter="all" class="filter-btn px-4 py-2 text-sm font-semibold bg-white text-[color:var(--tc-text-secondary)] rounded-lg border border-[color:var(--tc-border)] hover:bg-slate-50">Show all</button>
+                        <button data-filter="alert" class="filter-btn px-4 py-2 text-sm font-semibold bg-white text-[color:var(--tc-text-secondary)] rounded-lg border border-[color:var(--tc-border)] hover:bg-slate-50">Active Alerts</button>
+                        <button data-filter="warning" class="filter-btn px-4 py-2 text-sm font-semibold bg-white text-[color:var(--tc-text-secondary)] rounded-lg border border-[color:var(--tc-border)] hover:bg-slate-50">Warnings</button>
+                        <button data-filter="resolved" class="filter-btn px-4 py-2 text-sm font-semibold bg-white text-[color:var(--tc-text-secondary)] rounded-lg border border-[color:var(--tc-border)] hover:bg-slate-50">Auto Resolved</button>
+                    </div>
+                    <div class="flex gap-2">
+                         <button id="mark-all-read-btn" class="px-4 py-2 text-sm font-semibold bg-white text-[color:var(--tc-text-secondary)] rounded-lg border border-[color:var(--tc-border)] hover:bg-slate-50">Mark all as read</button>
+                         <button class="px-4 py-2 text-sm font-semibold bg-[color:var(--tc-blue)] text-white rounded-lg shadow-sm hover:bg-blue-700">Configure</button>
+                    </div>
+                </div>
+
+                <!-- Alerts List -->
+                <div id="alerts-list" class="space-y-4">
+                    <div data-type="alert" class="alert-card bg-white p-4 rounded-2xl shadow-sm border border-[color:var(--tc-red-light)] flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-[color:var(--tc-red-light)] p-2.5 rounded-full"><i data-lucide="bell" class="w-5 h-5 text-[color:var(--tc-red)]"></i></div>
+                            <div>
+                                <p class="font-semibold">Throttling Limit hit in US</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="mark-resolved-btn px-3 py-1.5 text-xs font-semibold bg-white text-[color:var(--tc-text-secondary)] rounded-md border border-[color:var(--tc-border)]">Mark as resolved</button>
+                            <button class="configure-alert-btn px-3 py-1.5 text-xs font-semibold bg-slate-100 text-[color:var(--tc-text-primary)] rounded-md">Configure</button>
+                        </div>
+                    </div>
+                    <div data-type="alert" class="alert-card bg-white p-4 rounded-2xl shadow-sm border border-[color:var(--tc-red-light)] flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-[color:var(--tc-red-light)] p-2.5 rounded-full"><i data-lucide="bell" class="w-5 h-5 text-[color:var(--tc-red)]"></i></div>
+                            <div>
+                                <p class="font-semibold">Suspected attack in Indonesia</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="mark-resolved-btn px-3 py-1.5 text-xs font-semibold bg-white text-[color:var(--tc-text-secondary)] rounded-md border border-[color:var(--tc-border)]">Mark as resolved</button>
+                            <button class="configure-alert-btn px-3 py-1.5 text-xs font-semibold bg-slate-100 text-[color:var(--tc-text-primary)] rounded-md">Get more insights</button>
+                        </div>
+                    </div>
+                     <div data-type="warning" class="alert-card bg-white p-4 rounded-2xl shadow-sm border border-[color:var(--tc-orange-light)] flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-[color:var(--tc-orange-light)] p-2.5 rounded-full"><i data-lucide="alert-triangle" class="w-5 h-5 text-[color:var(--tc-orange)]"></i></div>
+                            <div>
+                                <p class="font-semibold">Throttling Limit almost reached in South Africa</p>
+                                <p class="text-sm text-[color:var(--tc-text-secondary)]">Current rate is 0.8K per hour - Throttling Limit is 1K per hour</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="mark-resolved-btn px-3 py-1.5 text-xs font-semibold bg-white text-[color:var(--tc-text-secondary)] rounded-md border border-[color:var(--tc-border)]">Mark as resolved</button>
+                            <button class="configure-alert-btn px-3 py-1.5 text-xs font-semibold bg-slate-100 text-[color:var(--tc-text-primary)] rounded-md">Configure</button>
+                        </div>
+                    </div>
+                     <div data-type="resolved" class="alert-card bg-white p-4 rounded-2xl shadow-sm border border-[color:var(--tc-green-light)] flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-[color:var(--tc-green-light)] p-2.5 rounded-full"><i data-lucide="check-circle" class="w-5 h-5 text-[color:var(--tc-green)]"></i></div>
+                            <div>
+                                <p class="font-semibold">0% CR for Carrier Orange Egypt with Sinch</p>
+                                <p class="text-sm text-[color:var(--tc-text-secondary)]">Traffic rerouted to fallback provider Telesign.</p>
+                            </div>
+                        </div>
+                        <button class="configure-alert-btn px-3 py-1.5 text-xs font-semibold bg-slate-100 text-[color:var(--tc-text-primary)] rounded-md">Configure</button>
+                    </div>
+                     <div data-type="resolved" class="alert-card bg-white p-4 rounded-2xl shadow-sm border border-[color:var(--tc-green-light)] flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-[color:var(--tc-green-light)] p-2.5 rounded-full"><i data-lucide="check-circle" class="w-5 h-5 text-[color:var(--tc-green)]"></i></div>
+                            <div>
+                                <p class="font-semibold">Telesign Nigeria 0% CR (normally between 70%-75%)</p>
+                                <p class="text-sm text-[color:var(--tc-text-secondary)]">Traffic rerouted to fallback provider Bicsinfobip.</p>
+                            </div>
+                        </div>
+                         <button class="configure-alert-btn px-3 py-1.5 text-xs font-semibold bg-slate-100 text-[color:var(--tc-text-primary)] rounded-md">Configure</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration Page -->
+            <div id="config-page" class="hidden">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-[color:var(--tc-border)] mb-6">
+                    <div class="flex items-center space-x-4">
+                         <div class="flex items-center gap-2">
+                            <label for="country-search" class="text-sm font-medium text-[color:var(--tc-text-secondary)]">Country:</label>
+                            <div id="country-dropdown" class="relative">
+                                <button id="country-dropdown-button" type="button" class="flex items-center justify-between w-48 bg-white border border-[color:var(--tc-border)] rounded-lg px-3 py-1.5 text-sm">
+                                    <span id="selected-country">Select Country</span>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                                </button>
+                                <div id="country-dropdown-panel" class="absolute z-10 hidden mt-1 w-48 bg-white border border-[color:var(--tc-border)] rounded-lg shadow-lg">
+                                    <div class="p-2">
+                                        <input id="country-search-input" type="text" placeholder="Search..." class="w-full px-2 py-1 text-sm border border-[color:var(--tc-border)] rounded-md">
+                                    </div>
+                                    <ul id="country-list" class="max-h-60 overflow-y-auto">
+                                        <!-- Country items will be populated by JS -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="flex items-center gap-2">
+                            <label for="intention-search" class="text-sm font-medium text-[color:var(--tc-text-secondary)]">Intention:</label>
+                             <div id="intention-dropdown" class="relative">
+                                <button id="intention-dropdown-button" type="button" class="flex items-center justify-between w-48 bg-white border border-[color:var(--tc-border)] rounded-lg px-3 py-1.5 text-sm">
+                                    <span id="selected-intention">Select Intention</span>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                                </button>
+                                <div id="intention-dropdown-panel" class="absolute z-10 hidden mt-1 w-48 bg-white border border-[color:var(--tc-border)] rounded-lg shadow-lg">
+                                    <div class="p-2">
+                                        <input id="intention-search-input" type="text" placeholder="Search..." class="w-full px-2 py-1 text-sm border border-[color:var(--tc-border)] rounded-md">
+                                    </div>
+                                    <ul id="intention-list" class="max-h-60 overflow-y-auto">
+                                        <!-- Intention items will be populated by JS -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="flex space-x-2 mb-6 bg-slate-100 p-1.5 rounded-xl">
+                    <button id="routing-sub-tab" class="w-full py-2 px-4 rounded-lg font-semibold transition-all duration-300 sub-tab-active">Routing</button>
+                    <button id="throttling-sub-tab" class="w-full py-2 px-4 rounded-lg font-semibold transition-all duration-300 sub-tab-inactive">Throttling</button>
+                    <button id="automation-sub-tab" class="w-full py-2 px-4 rounded-lg font-semibold transition-all duration-300 sub-tab-inactive">Automation</button>
+                </div>
+                
+                <!-- Routing Sub Page -->
+                <div id="routing-sub-page">
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)]">
+                            <h3 class="font-semibold mb-2">Default rule</h3>
+                            <p class="text-sm text-[color:var(--tc-text-secondary)]">Platform: Android</p>
+                            <p class="text-sm text-[color:var(--tc-text-secondary)]">App versions < 13</p>
+                            <p class="text-sm text-[color:var(--tc-text-secondary)] mt-2 font-medium">Dropcall &rarr; DropcallLocal</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)]">
+                            <h3 class="font-semibold mb-2">Default rule</h3>
+                            <p class="text-sm text-[color:var(--tc-text-secondary)]">Platform: All</p>
+                            <p class="text-sm text-[color:var(--tc-text-secondary)]">App versions ALL</p>
+                             <p class="text-sm text-[color:var(--tc-text-secondary)] mt-2 font-medium">SMS &rarr; SMS</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)] mb-8">
+                        <h3 class="text-lg font-semibold mb-4">Change transport method and provider fallbacks</h3>
+                        <div class="flex items-center space-x-4 text-sm mb-6">
+                            <span class="text-[color:var(--tc-text-secondary)]">Carrier: All</span>
+                            <span class="text-[color:var(--tc-text-secondary)]">Platform: Android</span>
+                        </div>
+                        <div id="transport-methods-container" class="space-y-3">
+                            <!-- Rows will be dynamically populated -->
+                        </div>
+                        <div class="mt-4">
+                            <button id="add-fallback-btn" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-slate-100 text-[color:var(--tc-text-primary)] rounded-lg border border-[color:var(--tc-border)] hover:bg-slate-200">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                Add new fallback
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-3">
+                        <button class="px-5 py-2.5 text-sm font-semibold bg-white text-[color:var(--tc-text-primary)] rounded-lg border border-[color:var(--tc-border)]">Discard</button>
+                        <button class="px-5 py-2.5 text-sm font-semibold bg-[color:var(--tc-blue)] text-white rounded-lg shadow-sm">Publish changes</button>
+                    </div>
+                </div>
+                
+                <!-- Throttling Sub Page -->
+                <div id="throttling-sub-page" class="hidden">
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)]">
+                            <h3 class="font-semibold mb-2">Default throttling</h3>
+                            <p class="text-sm text-[color:var(--tc-text-secondary)] mb-2">non-EU, Android</p>
+                            <p class="text-sm font-medium">100 SMS per hour</p>
+                            <p class="text-sm font-medium">1000 dropcall per hour</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)]">
+                           <h3 class="font-semibold mb-2">Default throttling</h3>
+                           <p class="text-sm text-[color:var(--tc-text-secondary)] mb-2">non-EU, iOS</p>
+                           <p class="text-sm font-medium">100 SMS per hour</p>
+                           <p class="text-sm font-medium">1000 dropcall per hour</p>
+                        </div>
+                    </div>
+                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)]">
+                        <h3 class="text-lg font-semibold mb-4">Delivery throttling</h3>
+                        <p class="text-sm text-[color:var(--tc-text-secondary)] mb-6">Platform: Android</p>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                                <label class="font-medium">Phone number</label>
+                                <input type="text" value="3" class="rounded-lg text-sm">
+                                <span class="text-[color:var(--tc-text-secondary)]">times per</span>
+                                <input type="text" value="24 hour" class="rounded-lg text-sm">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                                <label class="font-medium">Request id</label>
+                                <input type="text" value="3" class="rounded-lg text-sm">
+                                <span class="text-[color:var(--tc-text-secondary)]">times per</span>
+                                <input type="text" value="24 hour" class="rounded-lg text-sm">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                                <label class="font-medium">OS country</label>
+                                <select class="rounded-lg text-sm"><option>SMS</option></select>
+                                <input type="text" value="1000" class="rounded-lg text-sm">
+                                <span class="text-[color:var(--tc-text-secondary)]">attempts per</span>
+                                <select class="rounded-lg text-sm"><option>hour</option></select>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="flex justify-end gap-3 mt-8">
+                        <button class="px-5 py-2.5 text-sm font-semibold bg-white text-[color:var(--tc-text-primary)] rounded-lg border border-[color:var(--tc-border)]">Discard</button>
+                        <button class="px-5 py-2.5 text-sm font-semibold bg-[color:var(--tc-blue)] text-white rounded-lg shadow-sm">Publish changes</button>
+                    </div>
+                </div>
+
+                <!-- Automation Sub Page -->
+                <div id="automation-sub-page" class="hidden">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-[color:var(--tc-border)]">
+                        <h3 class="text-lg font-semibold mb-4">Fallback in case of temporary CR issues</h3>
+                        <p class="text-sm text-[color:var(--tc-text-secondary)] mb-6">Platform: Android</p>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <label class="font-medium">Enable Automatic Fallback</label>
+                                <label class="flex items-center cursor-pointer toggle-container">
+                                    <div class="relative">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-14 h-8 rounded-full bg-gray-200 peer-checked:bg-[color:var(--tc-blue)] transition-colors"></div>
+                                        <div class="absolute left-1 top-1 h-6 w-6 rounded-full bg-white shadow transition-transform peer-checked:translate-x-6"></div>
+                                    </div>
+                                    <div class="ml-3 font-medium toggle-text">On</div>
+                                </label>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-medium">Use default fallback</label>
+                                <label class="flex items-center cursor-pointer toggle-container">
+                                    <div class="relative">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-14 h-8 rounded-full bg-gray-200 peer-checked:bg-[color:var(--tc-blue)] transition-colors"></div>
+                                        <div class="absolute left-1 top-1 h-6 w-6 rounded-full bg-white shadow transition-transform peer-checked:translate-x-6"></div>
+                                    </div>
+                                    <div class="ml-3 font-medium toggle-text">On</div>
+                                </label>
+                            </div>
+                            <div class="mt-6">
+                                <label class="font-medium mb-2 block">Default fallback</label>
+                                <div class="flex items-center gap-4">
+                                    <span class="font-bold text-[color:var(--tc-text-secondary)]">1</span>
+                                    <select class="w-full rounded-lg text-sm">
+                                        <option>SMS</option>
+                                    </select>
+                                    <i data-lucide="arrow-right" class="w-5 h-5 text-slate-400"></i>
+                                    <select class="w-full rounded-lg text-sm">
+                                        <option>Nexmo</option>
+                                    </select>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="flex justify-end gap-3 mt-8">
+                        <button class="px-5 py-2.5 text-sm font-semibold bg-white text-[color:var(--tc-text-primary)] rounded-lg border border-[color:var(--tc-border)]">Discard</button>
+                        <button class="px-5 py-2.5 text-sm font-semibold bg-[color:var(--tc-blue)] text-white rounded-lg shadow-sm">Publish changes</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Audit Log Page -->
+            <div id="audit-page" class="hidden">
+                 <div class="space-y-4">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-[color:var(--tc-border)] flex items-start justify-between">
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="history" class="w-6 h-6 text-[color:var(--tc-text-secondary)] mt-1"></i>
+                            <div>
+                                <p class="font-semibold">Provider change in Nigeria</p>
+                                <p class="text-sm text-[color:var(--tc-text-secondary)] mt-2"><span class="font-medium text-[color:var(--tc-text-primary)]">New values:</span> Telesign,bics-t-mexico,bics</p>
+                                <p class="text-sm text-[color:var(--tc-text-secondary)]"><span class="font-medium text-[color:var(--tc-text-primary)]">Old values:</span> bics,bics-sms-t-mexico,sms</p>
+                                <p class="text-xs text-slate-400 mt-3">User: Automated | Date: 2025-09-01 | Time: 19:20 CET</p>
+                            </div>
+                        </div>
+                        <button class="px-3 py-1.5 text-xs font-semibold bg-slate-100 text-[color:var(--tc-text-primary)] rounded-md whitespace-nowrap">Revert change</button>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-[color:var(--tc-border)] flex items-start justify-between">
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="history" class="w-6 h-6 text-[color:var(--tc-text-secondary)] mt-1"></i>
+                            <div>
+                                <p class="font-semibold">Transport change in US</p>
+                                <p class="text-sm text-[color:var(--tc-text-secondary)] mt-2"><span class="font-medium text-[color:var(--tc-text-primary)]">New values:</span> SMS-L-IMS-L-IMS</p>
+                                <p class="text-sm text-[color:var(--tc-text-secondary)]"><span class="font-medium text-[color:var(--tc-text-primary)]">Old values:</span> Dropcall-L-IMS-L-IMS</p>
+                                <p class="text-xs text-slate-400 mt-3">User: Karl | Date: 2025-09-01 | Time: 19:20 CET</p>
+                            </div>
+                        </div>
+                        <button class="px-3 py-1.5 text-xs font-semibold bg-slate-100 text-[color:var(--tc-text-primary)] rounded-md whitespace-nowrap">Revert change</button>
+                    </div>
+                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-[color:var(--tc-border)] flex items-start justify-between">
+                        <div class="flex items-start gap-4">
+                           <i data-lucide="history" class="w-6 h-6 text-[color:var(--tc-text-secondary)] mt-1"></i>
+                            <div>
+                                <p class="font-semibold">Default throttling limit changed</p>
+                                <p class="text-sm text-[color:var(--tc-text-secondary)] mt-2"><span class="font-medium text-[color:var(--tc-text-primary)]">New values:</span> 2 000 SMS per hour</p>
+                                <p class="text-sm text-[color:var(--tc-text-secondary)]"><span class="font-medium text-[color:var(--tc-text-primary)]">Old values:</span> 1 000 SMS per hour</p>
+                                <p class="text-xs text-slate-400 mt-3">User: Kamilla | Date: 2025-09-01 | Time: 19:20 CET</p>
+                            </div>
+                        </div>
+                        <button class="px-3 py-1.5 text-xs font-semibold bg-slate-100 text-[color:var(--tc-text-primary)] rounded-md whitespace-nowrap">Revert change</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const mainTabs = [
+            { btn: document.getElementById('alerts-tab'), page: document.getElementById('alerts-page') },
+            { btn: document.getElementById('config-tab'), page: document.getElementById('config-page') },
+            { btn: document.getElementById('audit-tab'), page: document.getElementById('audit-page') }
+        ];
+
+        const configSubTabs = [
+             { btn: document.getElementById('routing-sub-tab'), page: document.getElementById('routing-sub-page') },
+             { btn: document.getElementById('throttling-sub-tab'), page: document.getElementById('throttling-sub-page') },
+             { btn: document.getElementById('automation-sub-tab'), page: document.getElementById('automation-sub-page') }
+        ];
+
+        function switchTabs(tabs, activeBtn, activeClass, inactiveClass) {
+            tabs.forEach(tab => {
+                if (tab.btn === activeBtn) {
+                    tab.btn.classList.remove(inactiveClass);
+                    tab.btn.classList.add(activeClass);
+                    tab.page.classList.remove('hidden');
+                } else {
+                    tab.btn.classList.remove(activeClass);
+                    tab.btn.classList.add(inactiveClass);
+                    tab.page.classList.add('hidden');
+                }
+            });
+        }
+
+        mainTabs.forEach(tab => {
+            tab.btn.addEventListener('click', () => {
+                switchTabs(mainTabs, tab.btn, 'tab-active', 'tab-inactive');
+            });
+        });
+
+        configSubTabs.forEach(tab => {
+            tab.btn.addEventListener('click', () => {
+                switchTabs(configSubTabs, tab.btn, 'sub-tab-active', 'sub-tab-inactive');
+            });
+        });
+
+        // Transport method row management
+        const addFallbackBtn = document.getElementById('add-fallback-btn');
+        const transportMethodsContainer = document.getElementById('transport-methods-container');
+        
+        const initialTransportData = [
+            { transport: 'WhatsApp', provider1: 'Twilio', provider2: 'Bicsinfobip' },
+            { transport: 'ROTP', provider1: '', provider2: '' },
+            { transport: 'SMS', provider1: 'Sinch', provider2: 'Telesign' },
+            { transport: 'Empty', provider1: '-', provider2: '-' },
+            { transport: 'Empty', provider1: '-', provider2: '-' }
+        ];
+
+        const transportOptions = ['WhatsApp', 'ROTP', 'SMS', 'Dropcall', 'Empty'];
+        const providerOptions = ['Twilio', 'Sinch', 'Bicsinfobip', 'Telesign', 'Nexmo', '-'];
+
+        function createSelect(options, selectedValue) {
+            const select = document.createElement('select');
+            select.className = 'w-full rounded-lg text-sm';
+            options.forEach(opt => {
+                const option = document.createElement('option');
+                const value = (opt === 'Empty' || opt === '-') ? '' : opt;
+                option.value = value;
+                option.textContent = opt;
+                if (opt === selectedValue) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+            return select;
+        }
+
+        function createTransportRow(rowData, index) {
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-4 transport-row';
+
+            const rowNumber = document.createElement('span');
+            rowNumber.className = 'font-bold text-[color:var(--tc-text-secondary)] row-number';
+            rowNumber.textContent = index + 1;
+
+            const transportSelect = createSelect(transportOptions, rowData.transport);
+            const provider1Select = createSelect(providerOptions, rowData.provider1);
+            const provider2Select = createSelect(providerOptions, rowData.provider2);
+
+            const arrowIcon = document.createElement('i');
+            arrowIcon.setAttribute('data-lucide', 'arrow-right');
+            arrowIcon.className = 'w-5 h-5 text-slate-400';
+
+            row.append(rowNumber, transportSelect, arrowIcon, provider1Select, provider2Select);
+            return row;
+        }
+
+        function renderTransportRows() {
+            if(!transportMethodsContainer) return;
+            transportMethodsContainer.innerHTML = '';
+            initialTransportData.forEach((data, index) => {
+                const row = createTransportRow(data, index);
+                transportMethodsContainer.appendChild(row);
+            });
+            lucide.createIcons();
+        }
+
+        if (addFallbackBtn) {
+            addFallbackBtn.addEventListener('click', () => {
+                initialTransportData.push({ transport: 'Empty', provider1: '-', provider2: '-' });
+                renderTransportRows();
+            });
+        }
+
+        // Initial render
+        renderTransportRows();
+
+        // --- ALERT FUNCTIONALITY ---
+
+        const filterBtnContainer = document.getElementById('filter-btn-container');
+        const alertCards = document.querySelectorAll('.alert-card');
+        const markAllReadBtn = document.getElementById('mark-all-read-btn');
+        const configTabBtn = document.getElementById('config-tab');
+
+        // Filter button logic
+        if (filterBtnContainer) {
+            const filterButtons = filterBtnContainer.querySelectorAll('.filter-btn');
+            
+            // Set 'Show all' as active by default
+            if(filterButtons.length > 0) {
+               filterButtons[0].classList.add('filter-btn-active');
+            }
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    // Update styles
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('filter-btn-active');
+                    });
+                    e.currentTarget.classList.add('filter-btn-active');
+
+                    const filter = e.currentTarget.dataset.filter;
+
+                    alertCards.forEach(card => {
+                        // Reset read state when filtering for better UX
+                        card.classList.remove('read-alert');
+                        if (filter === 'all' || card.dataset.type === filter) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        }
+
+
+        // Mark all as read button logic
+        if (markAllReadBtn) {
+            markAllReadBtn.addEventListener('click', () => {
+                alertCards.forEach(card => {
+                    // Only apply to visible cards
+                    if(card.style.display !== 'none') {
+                        card.classList.add('read-alert');
+                    }
+                });
+            });
+        }
+
+        // Logic for buttons inside each alert card
+        alertCards.forEach(card => {
+            const markResolvedBtn = card.querySelector('.mark-resolved-btn');
+            const configureBtn = card.querySelector('.configure-alert-btn');
+
+            // Mark as resolved
+            if (markResolvedBtn) {
+                markResolvedBtn.addEventListener('click', () => {
+                    card.style.display = 'none';
+                });
+            }
+
+            // Configure
+            if (configureBtn) {
+                configureBtn.addEventListener('click', () => {
+                    // Programmatically click the main config tab
+                    configTabBtn.click();
+                });
+            }
+        });
+
+        // --- TOGGLE SWITCH FUNCTIONALITY ---
+        const toggles = document.querySelectorAll('.toggle-container');
+
+        toggles.forEach(toggle => {
+            const checkbox = toggle.querySelector('input[type="checkbox"]');
+            const text = toggle.querySelector('.toggle-text');
+
+            if (checkbox && text) {
+                // Function to update text and color
+                const updateToggleState = () => {
+                    if (checkbox.checked) {
+                        text.textContent = 'On';
+                        text.classList.remove('text-[color:var(--tc-text-secondary)]');
+                        text.classList.add('text-gray-700');
+                    } else {
+                        text.textContent = 'Off';
+                        text.classList.add('text-[color:var(--tc-text-secondary)]');
+                        text.classList.remove('text-gray-700');
+                    }
+                };
+                // Set initial state
+                updateToggleState();
+                // Listen for changes
+                checkbox.addEventListener('change', updateToggleState);
+            }
+        });
+
+        // --- COUNTRY DROPDOWN FUNCTIONALITY ---
+        const countryDropdown = document.getElementById('country-dropdown');
+        const countryDropdownButton = document.getElementById('country-dropdown-button');
+        const countryDropdownPanel = document.getElementById('country-dropdown-panel');
+        const countrySearchInput = document.getElementById('country-search-input');
+        const countryList = document.getElementById('country-list');
+        const selectedCountrySpan = document.getElementById('selected-country');
+
+        const countries = [
+            "China", "India", "United States", "Indonesia", "Pakistan", 
+            "Nigeria", "Brazil", "Bangladesh", "Russia", "Mexico", 
+            "Japan", "Ethiopia", "Philippines", "Egypt", "Vietnam", 
+            "DR Congo", "Turkey", "Iran", "Germany", "Thailand"
+        ];
+
+        function populateCountries(filter = '') {
+            if (!countryList) return;
+            countryList.innerHTML = '';
+            const filteredCountries = countries.filter(c => c.toLowerCase().includes(filter.toLowerCase()));
+            
+            filteredCountries.forEach(country => {
+                const li = document.createElement('li');
+                li.textContent = country;
+                li.className = 'px-3 py-2 text-sm cursor-pointer hover:bg-slate-100';
+                li.addEventListener('click', () => {
+                    selectedCountrySpan.textContent = country;
+                    countryDropdownPanel.classList.add('hidden');
+                });
+                countryList.appendChild(li);
+            });
+        }
+
+        if(countryDropdown) {
+             countryDropdownButton.addEventListener('click', () => {
+                countryDropdownPanel.classList.toggle('hidden');
+                if(!countryDropdownPanel.classList.contains('hidden')){
+                    populateCountries();
+                    countrySearchInput.focus();
+                }
+            });
+
+            countrySearchInput.addEventListener('input', () => {
+                populateCountries(countrySearchInput.value);
+            });
+            selectedCountrySpan.textContent = "India";
+        }
+
+        // --- INTENTION DROPDOWN FUNCTIONALITY ---
+        const intentionDropdown = document.getElementById('intention-dropdown');
+        const intentionDropdownButton = document.getElementById('intention-dropdown-button');
+        const intentionDropdownPanel = document.getElementById('intention-dropdown-panel');
+        const intentionSearchInput = document.getElementById('intention-search-input');
+        const intentionList = document.getElementById('intention-list');
+        const selectedIntentionSpan = document.getElementById('selected-intention');
+
+        const intentions = [
+            "Verification", "SDK", "Unlist", "Web Delete", "Web Consent", "Name suggestion"
+        ];
+
+        function populateIntentions(filter = '') {
+            if (!intentionList) return;
+            intentionList.innerHTML = '';
+            const filteredIntentions = intentions.filter(i => i.toLowerCase().includes(filter.toLowerCase()));
+            
+            filteredIntentions.forEach(intention => {
+                const li = document.createElement('li');
+                li.textContent = intention;
+                li.className = 'px-3 py-2 text-sm cursor-pointer hover:bg-slate-100';
+                li.addEventListener('click', () => {
+                    selectedIntentionSpan.textContent = intention;
+                    intentionDropdownPanel.classList.add('hidden');
+                });
+                intentionList.appendChild(li);
+            });
+        }
+        
+        if(intentionDropdown) {
+             intentionDropdownButton.addEventListener('click', () => {
+                intentionDropdownPanel.classList.toggle('hidden');
+                if(!intentionDropdownPanel.classList.contains('hidden')){
+                    populateIntentions();
+                    intentionSearchInput.focus();
+                }
+            });
+
+            intentionSearchInput.addEventListener('input', () => {
+                populateIntentions(intentionSearchInput.value);
+            });
+            selectedIntentionSpan.textContent = "Verification";
+        }
+        
+        // Close dropdowns when clicking outside
+        window.addEventListener('click', (e) => {
+            if (countryDropdown && !countryDropdown.contains(e.target)) {
+                countryDropdownPanel.classList.add('hidden');
+            }
+            if (intentionDropdown && !intentionDropdown.contains(e.target)) {
+                intentionDropdownPanel.classList.add('hidden');
+            }
+        });
+
+
+    </script>
+</body>
+</html>
+
